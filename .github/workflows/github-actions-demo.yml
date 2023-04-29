@@ -22,35 +22,21 @@ jobs:
        with:
          version: v3.5.2
 
-     - name: Run chart-releaser
-       uses: helm/chart-releaser-action@v1.4.0
-       with:
-         charts_dir: charts
-       env:
-         CR_TOKEN: "${{ secrets.GH_TOKEN }}"
-
-     - name: Checkout
-       uses: actions/checkout@v2
-       with:
-         path: 'dest'
-         #ref: 'gh-pages'
-         fetch-depth: 0
-
-     - name: Package Helm Charts
+     - name: Install helm plugin on S3 bucket
        run: |
-         find charts/ -type f -name 'Chart.yaml' | sed -r 's|/[^/]+$||' |sort | uniq | xargs -L 1 helm dependency update
-         for dir in charts/*/ ; do
-           echo "Processing $dir ..."
-           helm package "$dir" -u -d dest
-         done
+         helm plugin install https://github.com/hypnoglow/helm-s3.git
+         
+     # Configure AWS credentials.
+     - name: AWS Credentials
+       id: aws-credentials
+       uses: aws-actions/configure-aws-credentials@v1
+       with:
+         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }} 
+         role-duration-seconds: 900 
+         aws-region: us-east-1 
+         role-skip-session-tagging: true
+         
+     - name: Upload Helm chart to S3 bucket
+       run: | 
+         helm s3 push ./path/to/chart.tgz my-s3-bucket/path/to/chart.tgz
 
-     - name: Push New Files
-       working-directory: dest
-       run: |
-         helm repo index . --url <https://raw.githubusercontent.com/underarmour/ecom-app-helm-charts/gh-pages/>
-         git config user.name "$GITHUB_ACTOR"
-         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-         git add $(git ls-files -o --exclude-standard)
-         git add index.yaml
-         git commit -m "Updated from ref: $GITHUB_SHA"
-         git push
