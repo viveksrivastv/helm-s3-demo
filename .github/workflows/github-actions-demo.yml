@@ -52,9 +52,14 @@ jobs:
      - name: Helm repo add to S3 bucket
        run: | 
          helm repo add my-charts s3://helm-s3-demo/charts
-         
-     - name: Upload Helm chart to S3 bucket
-       run: | 
+         touch index.html && aws s3 cp index.html s3://helm-s3-demo && rm -f index.html
+         helm s3 init s3://helm-s3-demo
+         helm repo add rabbitmq https://helm-s3-demo.s3.amazonaws.com
          helm fetch stable/rabbitmq
-         helm s3 push rabbitmq-6.12.1.tgz helm-s3-demo/charts/rabbitmq-6.12.1.tgz
+         helm s3 push rabbitmq-6.12.1.tgz rabbitmq
+         
+     #- name: Upload Helm chart to S3 bucket
+     #  run: | 
+     #    helm fetch stable/rabbitmq
+     #    helm s3 push rabbitmq-6.12.1.tgz helm-s3-demo/charts/rabbitmq-6.12.1.tgz
 
