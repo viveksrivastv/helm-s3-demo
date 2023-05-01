@@ -52,8 +52,8 @@ jobs:
      - name: Helm repo add to S3 bucket
        run: |
          helm repo add my-charts s3://helm-s3-demo/
-         helm fetch stable/rabbitmq
-         helm s3 push rabbitmq-6.12.1.tgz rabbitmq
+         helm package ecom-app-helm-charts
+         helm s3 push ecom-app-helm-charts.tgz ecom-app-helm-charts.tgz
          
      #- name: Upload Helm chart to S3 bucket
      #  run: | 
