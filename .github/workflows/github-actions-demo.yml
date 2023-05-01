@@ -52,7 +52,7 @@ jobs:
      - name: Helm repo add to S3 bucket
        run: |
          helm repo add my-charts s3://helm-s3-demo/
-         helm package ecom-app-helm-charts
+         helm package ecom-app-helm-charts/charts/redis-cluster/
          helm s3 push ecom-app-helm-charts.tgz s3://helm-s3-demo/charts/ecom-app-helm-charts.tgz
          
      #- name: Upload Helm chart to S3 bucket
