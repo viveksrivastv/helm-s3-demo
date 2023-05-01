@@ -54,9 +54,4 @@ jobs:
          helm repo add my-charts s3://helm-s3-demo/charts
          helm package ecom-app-helm-charts/charts/redis-cluster/
          helm s3 push redis-0.1.0.tgz my-charts
-         
-     #- name: Upload Helm chart to S3 bucket
-     #  run: | 
-     #    helm fetch stable/rabbitmq
-     #    helm s3 push rabbitmq-6.12.1.tgz helm-s3-demo/charts/rabbitmq-6.12.1.tgz
 
