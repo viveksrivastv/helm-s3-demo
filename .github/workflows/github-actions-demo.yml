@@ -5,7 +5,7 @@ on:
      - main
 jobs:
  release:
-   runs-on: default-runner
+   runs-on: ubuntu-latest
    steps:
      - name: Checkout
        uses: actions/checkout@v2
