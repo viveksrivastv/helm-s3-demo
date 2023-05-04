@@ -46,6 +46,6 @@ jobs:
          cd helm-s3-demo/${PACKAGE}
          helm package ./*
          cd ../..
-         helm s3 push ${PACKAGE}/${PACKAGE}-*.tgz my-charts
+         helm s3 push ${PACKAGE}-*.tgz my-charts
          #helm s3 push redis-0.1.0.tgz my-charts
 
