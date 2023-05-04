@@ -31,7 +31,7 @@ jobs:
        with:
          aws-access-key-id: 'AKIAJ3GJQM4UF4NCKYZQ'
          aws-secret-access-key: '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'
-         #aws-access-key-id: ${{ secrets.AWS.AWS_ACCESS_KEY_ID }}
+         ##aws-access-key-id: ${{ secrets.AWS.AWS_ACCESS_KEY_ID }}
          #aws-secret-access-key: ${{ secrets.AWS.AWS_SECRET_ACCESS_KEY }}
          aws-region: ap-south-1
          role-duration-seconds: 1200
