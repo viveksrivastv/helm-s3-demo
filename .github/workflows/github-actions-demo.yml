@@ -43,8 +43,9 @@ jobs:
          PACKAGE=ecom-app-helm-charts/charts
          helm repo add my-charts s3://${HELM_BUCKET}/charts
          git clone https://github.com/viveksrivastv/helm-s3-demo.git
-         #cd helm-s3-demo/${PACKAGE}
+         cd helm-s3-demo/${PACKAGE}
          helm package ./*
+         cd ../..
          helm s3 push helm-s3-demo/${PACKAGE}/${PACKAGE}-*.tgz my-charts
          #helm s3 push redis-0.1.0.tgz my-charts
 
