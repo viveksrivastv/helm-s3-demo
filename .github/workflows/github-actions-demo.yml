@@ -47,5 +47,4 @@ jobs:
          helm package ./*
          cd ../../${PACKAGE}
          for i in *.tgz; do helm s3 push $i my-charts; done
-         #helm s3 push redis-0.1.0.tgz my-charts
 
