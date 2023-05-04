@@ -40,11 +40,11 @@ jobs:
      - name: Helm repo add to S3 bucket
        run: |
          HELM_BUCKET=helm-s3-demo
-         PACKAGE=ecom-app-helm-charts/charts
+         HELM_PATH=ecom-app-helm-charts/charts
          helm repo add my-charts s3://${HELM_BUCKET}/charts
          git clone https://github.com/viveksrivastv/helm-s3-demo.git
-         cd helm-s3-demo/${PACKAGE}
+         cd helm-s3-demo/${HELM_PATH}
          helm package ./*
-         cd ../../${PACKAGE}
+         cd ../../${HELM_PATH}
          for i in *.tgz; do helm s3 push $i my-charts; done
 
