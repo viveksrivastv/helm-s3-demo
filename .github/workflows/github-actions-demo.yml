@@ -45,6 +45,6 @@ jobs:
          git clone https://github.com/viveksrivastv/helm-s3-demo.git
          cd helm-s3-demo/${PACKAGE}
          helm package ./*
-         helm s3 push ${PACKAGE}-*.tgz my-charts
+         helm s3 push helm-s3-demo/${PACKAGE}/${PACKAGE}-*.tgz my-charts
          #helm s3 push redis-0.1.0.tgz my-charts
 
