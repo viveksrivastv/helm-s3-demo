@@ -1,0 +1,36 @@
+Helmify  - https://github.com/arttor/helmify
+It convert k8s yaml to helm chart
+
+Installation on Ubuntu (18.04)
+
+$ sudo apt update
+$ sudo apt install linuxbrew-wrapper
+$ export PATH="/usr/local/bin:$PATH"
+$ brew install arttor/tap/helmify
+$ brew doctor                                     //provide below path to set
+$ echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.profile
+$ source ~/.profile
+
+## Helmify single yaml file
+cat my-app.yaml | helmify mychart
+
+
+$ mkdir myapp  //put all yaml files here
+$ tree myapp
+myapp/
+├── deployment.yml
+├── ingress.yml
+└── service.yml
+
+## Helmify multiple yaml files
+$ awk 'FNR==1 && NR!=1  {print "---"}{print}' myapp/*.yml | helmify mychart
+
+$ tree mychart/
+mychart/
+├── Chart.yaml
+├── templates
+│   ├── _helpers.tpl
+│   ├── deployment.yaml
+│   ├── ingress.yaml
+│   └── service.yaml
+└── values.yaml
