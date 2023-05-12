@@ -42,7 +42,8 @@ jobs:
          HELM_BUCKET=helm-s3-demo
          HELM_PATH=ecom-app-helm-charts/charts
          helm repo add my-charts s3://${HELM_BUCKET}/charts
-         git clone https://github.com/viveksrivastv/helm-s3-demo.git
+         #git clone https://github.com/viveksrivastv/helm-s3-demo.git
+         git clone https://github.com/arttor/helmify
          cd helm-s3-demo/${HELM_PATH}
          helm package ./*
          cd ../../${HELM_PATH}
