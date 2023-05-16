@@ -37,17 +37,17 @@ jobs:
          role-duration-seconds: 1200
          role-session-name: MySessionName
          
-     - name: Helm repo add to S3 bucket
-       run: |
-         HELM_BUCKET=helm-s3-demo
-         HELM_PATH=ecom-app-helm-charts/charts
-         helm repo add my-charts s3://${HELM_BUCKET}/charts
+     #- name: Helm repo add to S3 bucket
+     #  run: |
+     #    HELM_BUCKET=helm-s3-demo
+     #    HELM_PATH=ecom-app-helm-charts/charts
+     #    helm repo add my-charts s3://${HELM_BUCKET}/charts
          #git clone https://github.com/viveksrivastv/helm-s3-demo.git
-         git clone https://github.com/arttor/helmify
-         cd helm-s3-demo/${HELM_PATH}
-         helm package ./*
-         cd ../../${HELM_PATH}
-         for i in *.tgz; do helm s3 push --ignore-if-exists $i my-charts; done
+     #    git clone https://github.com/arttor/helmify
+     #    cd helm-s3-demo/${HELM_PATH}
+     #    helm package ./*
+     #    cd ../../${HELM_PATH}
+     #    for i in *.tgz; do helm s3 push --ignore-if-exists $i my-charts; done
          
      - name: Set Backend Configuration
        run: |
