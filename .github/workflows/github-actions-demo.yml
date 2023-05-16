@@ -37,6 +37,10 @@ jobs:
          role-duration-seconds: 1200
          role-session-name: MySessionName
          
+     - name: test file
+       run: |
+            echo "hello" >> test
+            cat test
      #- name: Helm repo add to S3 bucket
      #  run: |
      #    HELM_BUCKET=helm-s3-demo
