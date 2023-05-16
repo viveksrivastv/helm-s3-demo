@@ -48,4 +48,17 @@ jobs:
          helm package ./*
          cd ../../${HELM_PATH}
          for i in *.tgz; do helm s3 push --ignore-if-exists $i my-charts; done
+         
+     - name: Set Backend Configuration
+       run: |
+         echo "terraform { backend \"s3\" {} }" > backend.tfvars
+         if [[ ${{ github.event.inputs.envchoice }} == "dev" ]]; then
+           echo -e "bucket = \"dev-tfstate-bucket-eksblueprintmay152023-eksblueprintmay152023\"" >> backend.tfvars
+           echo -e "dynamodb_table = \"dev-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tfvars
+           echo -e "key = dev" >> backend.tfvars
+         elif [[ ${{ github.event.inputs.envchoice }} == "test" ]]; then
+           echo -e "bucket = \"test-tfstate-bucket-eksblueprintmay152023\"" >> backend.tfvars
+           echo -e "dynamodb_table = \"test-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tfvars
+           echo -e "key = test" >> backend.tfvars
+         fi
 
