@@ -1,0 +1,102 @@
+
+name: Custom
+
+on:
+  workflow_dispatch:
+    inputs:
+      
+      
+      choice1:
+        type: choice
+        description: Make a choice
+        options:
+        -
+        - apply
+        - destroy
+      envchoice:
+        type: choice
+        description: select an env
+        options:
+        -
+        - dev
+        - test
+      owntfvars:
+        type: string
+        description: test
+permissions:
+    id-token: write # This is required for requesting the JWT
+    contents: read  # This is required for actions/checkout
+    
+jobs:
+        terraform:
+            name: 'Terraform Apply to Digital Sandbox'
+            runs-on: ubuntu-latest
+            environment: DigitalSandboxInfraDeploy
+        
+            # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+            defaults:
+                run:
+                    shell: bash
+                    working-directory: .     
+        
+            steps:
+            # Checkout the repository to the GitHub Actions runner
+            - name: Checkout
+              uses: actions/checkout@v3
+        
+            
+            - name: AWS Credentials
+              id: aws-credentials
+              uses: aws-actions/configure-aws-credentials@v1
+              with:
+                role-to-assume: arn:aws:iam::522138564012:role/terraform-role-poc  # Note that this is note the same role used in the provider config    
+                role-duration-seconds: 900 # the ttl of the session, in seconds.
+                aws-region: us-east-1 # use your region here.
+                role-skip-session-tagging: true     
+            - name: Set Backend Configuration
+              run: | 
+               rm -f backend.tf
+               echo -e "terraform {" >> backend.tf
+               echo -e "backend \"s3\" {" >> backend.tf
+               echo -e "region = \"us-east-1\"" >> backend.tf
+              
+               #echo "terraform { backend \"s3\" {} }" > backend.tf
+                if [[ ${{ github.event.inputs.owntfvars }} ]]; then
+                  echo ${{ github.event.inputs.owntfvars }}
+                elif [[ ${{ github.event.inputs.envchoice }} == "dev" ]] || [[ -z ${{ github.event.inputs.envchoice }}]]; then
+                  echo -e "bucket = \"dev-tfstate-bucket-eksblueprintmay152023-eksblueprintmay152023\"" >> backend.tf
+                  echo -e "dynamodb_table = \"dev-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
+                  echo -e "key = \"dev\"" >> backend.tf
+                elif [[ ${{ github.event.inputs.envchoice }} == "test" ]] || [[ -z ${{ github.event.inputs.envchoice }}]]; then
+                  echo -e "bucket = \"test-tfstate-bucket-eksblueprintmay152023\"" >> backend.tf
+                  echo -e "dynamodb_table = \"test-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
+                  echo -e "key = \"test\"" >> backend.tf
+                
+                  
+                fi  
+                echo -e "}" >> backend.tf
+                echo -e "}" >> backend.tf
+                cat backend.tf
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v1
+        
+            - name: Terraform fmt
+              run: terraform fmt backend.tf
+            - name: Terraform Init
+              run: terraform init
+            
+
+
+            - name: Terraform Plan
+              run: terraform plan -input=false -no-color -out tf.plan -var-file=${{ github.event.inputs.envchoice }}.tfvars
+            - name: Terraform Apply
+              if: ${{ github.event.inputs.choice1 == 'apply' && (github.event.inputs.envchoice == 'dev' || github.event.inputs.envchoice == 'test') }}
+              run: terraform apply -auto-approve -input=false -var-file=${{ github.event.inputs.envchoice }}.tfvars
+              #run: echo "we r in apply"
+            - name: Terraform Destroy
+              if: ${{ github.event.inputs.choice1 == 'destroy' && (github.event.inputs.envchoice == 'dev' || github.event.inputs.envchoice == 'test') }}
+              run: terraform destroy -auto-approve -input=false -var-file=${{ github.event.inputs.envchoice }}.tfvars
+              #run: echo "we r in destroy"
+            
+              
+                
