@@ -62,14 +62,14 @@ jobs:
               
                #echo "terraform { backend \"s3\" {} }" > backend.tf
                   
-               if: github.event_name == 'workflow_dispatch' && github.event.inputs.envchoice == ''
+               if: github.event_name == 'workflow_dispatch' && github.event.inputs.envchoice == '' && github.event.inputs.owntfvars
                   echo ${{ github.event.inputs.owntfvars }}
                if: ${{ github.event.inputs.envchoice }} == "dev" && github.event.inputs.envchoice != ''
                   echo -e "bucket = \"dev-tfstate-bucket-eksblueprintmay152023-eksblueprintmay152023\"" >> backend.tf
                   echo -e "dynamodb_table = \"dev-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
                   echo -e "key = \"dev\"" >> backend.tf
                   exit
-                elif [[ ${{ github.event.inputs.envchoice }} == "test" ]]; then
+                elif: ${{ github.event.inputs.envchoice }} == "test" && github.event.inputs.envchoice != ''
                   echo -e "bucket = \"test-tfstate-bucket-eksblueprintmay152023\"" >> backend.tf
                   echo -e "dynamodb_table = \"test-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
                   echo -e "key = \"test\"" >> backend.tf
