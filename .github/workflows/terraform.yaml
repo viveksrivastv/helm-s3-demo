@@ -10,14 +10,14 @@ on:
         type: choice
         description: Make a choice
         options:
-        -
+        - ""
         - apply
         - destroy
       envchoice:
         type: choice
         description: select an env
         options:
-        -
+        - ""
         - dev
         - test
       owntfvars:
