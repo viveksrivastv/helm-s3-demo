@@ -63,7 +63,8 @@ jobs:
                #echo "terraform { backend \"s3\" {} }" > backend.tf
                 if [[ ${{ github.event.inputs.owntfvars }} ]]; then
                   echo ${{ github.event.inputs.owntfvars }}
-                if: ${{ github.event.inputs.envchoice }} != ''
+                if: ${{ github.event.inputs.envchoice != 'true' }}
+      
                 if: ${{ github.event.inputs.envchoice }} == "dev"
                   echo -e "bucket = \"dev-tfstate-bucket-eksblueprintmay152023-eksblueprintmay152023\"" >> backend.tf
                   echo -e "dynamodb_table = \"dev-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
