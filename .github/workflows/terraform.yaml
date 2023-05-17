@@ -61,11 +61,10 @@ jobs:
                echo -e "region = \"us-east-1\"" >> backend.tf
               
                #echo "terraform { backend \"s3\" {} }" > backend.tf
-                if [[ ${{ github.event.inputs.owntfvars }} ]]; then
+                  
+               if: github.event_name == 'workflow_dispatch' && github.event.inputs.envchoice == ''
                   echo ${{ github.event.inputs.owntfvars }}
-                if: ${{ github.event.inputs.envchoice != 'true' }}
-      
-                if: ${{ github.event.inputs.envchoice }} == "dev"
+               if: ${{ github.event.inputs.envchoice }} == "dev" && github.event.inputs.envchoice != ''
                   echo -e "bucket = \"dev-tfstate-bucket-eksblueprintmay152023-eksblueprintmay152023\"" >> backend.tf
                   echo -e "dynamodb_table = \"dev-tfstate-lock-dynamodb-table-eksblueprintmay152023\"" >> backend.tf
                   echo -e "key = \"dev\"" >> backend.tf
